@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetry-patches"
-version = "0.1.0"
+version = "0.1.1"
 description = "A patches plugin for Poetry."
 license = "MIT"
 authors = ["Bendegúz Csirmaz <csirmazbendeguz@gmail.com>"]
