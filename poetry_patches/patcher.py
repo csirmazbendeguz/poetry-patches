@@ -62,8 +62,7 @@ class PoetryPatcher:
 
         for key, value in self.poetry_patches_config.items():
             if dist := env.site_packages.find_distribution(key):
-                target_dir = dist.locate_file(dist.name)
-                self.apply_patches(target_dir, value)
+                self.apply_patches(dist._path.parent, value)
 
     def apply_patches(self, target_dir: Path, patch_uris: list[str]) -> None:
         for patch_uri in patch_uris:
@@ -137,7 +136,7 @@ class PoetryPatcher:
         if uri.startswith("http://") or uri.startswith("https://"):
             return requests.get(uri).content.decode()
         else:
-            return Path(uri).read_text()
+            return Path(uri).read_bytes().decode()
 
     @staticmethod
     def is_empty(path: str) -> bool:

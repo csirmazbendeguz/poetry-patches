@@ -1,0 +1,11 @@
+diff --git a/pass_on_line_break.txt b/pass_on_line_break.txt
+index 10014ab5..15469541 100644
+--- a/pass_on_line_break.txt
++++ b/pass_on_line_break.txt
+@@ -13,6 +13,7 @@ minim
+ velit
+
+ veniam,
++aliqua
+
+ nost

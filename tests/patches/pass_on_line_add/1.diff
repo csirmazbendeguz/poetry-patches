@@ -1,0 +1,42 @@
+diff --git a/pass_on_line_add.txt b/pass_on_line_add.txt
+new file mode 100644
+index 00000000..e8a73837
+--- /dev/null
++++ b/pass_on_line_add.txt
+@@ -0,0 +1,36 @@
++Lorem
++ipsum
++dolor
++sit
++amet,
++consectetur
++adipiscing
++elit,
++sed
++do
++eiusmod
++tempor
++incididunt
++ut
++labore
++et
++dolore
++magna
++aliqua.
++Ut
++enim
++ad
++minim
++veniam,
++quis
++nostrud
++exercitation
++ullamco
++laboris
++nisi
++ut
++aliquip
++ex
++ea
++commodo
++consequat.

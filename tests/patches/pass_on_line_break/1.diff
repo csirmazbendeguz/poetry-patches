@@ -1,0 +1,37 @@
+diff --git a/pass_on_line_break.txt b/pass_on_line_break.txt
+new file mode 100644
+index 00000000..10014ab5
+--- /dev/null
++++ b/pass_on_line_break.txt
+@@ -0,0 +1,31 @@
++Lorem
++
++ipsum
++
++dolor
++
++sit
++
++amet,
++
++minim
++
++velit
++
++veniam,
++
++nost
++
++rud
++
++exercitation
++
++ullamco
++
++nisi
++
++ut
++
++aliquip
++
++ex

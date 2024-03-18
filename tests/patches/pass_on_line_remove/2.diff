@@ -1,0 +1,12 @@
+diff --git a/pass_on_line_remove.txt b/pass_on_line_remove.txt
+index e8a73837..e8cc8b76 100644
+--- a/pass_on_line_remove.txt
++++ b/pass_on_line_remove.txt
+@@ -23,7 +23,6 @@ ad
+ minim
+ veniam,
+ quis
+-nostrud
+ exercitation
+ ullamco
+ laboris
