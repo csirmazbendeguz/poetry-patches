@@ -1,5 +1,5 @@
-diff --git a/dummy_2.txt b/dummy_2.txt
+diff --git a/pass_2.txt b/pass_2.txt
 deleted file mode 100644
 index 61780798..00000000
---- a/dummy_2.txt
+--- a/pass_2.txt
 +++ /dev/null

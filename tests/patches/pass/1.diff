@@ -1,7 +1,7 @@
-diff --git a/dummy.txt b/dummy.txt
+diff --git a/pass.txt b/pass.txt
 new file mode 100644
 index 00000000..78981922
 --- /dev/null
-+++ b/dummy.txt
++++ b/pass.txt
 @@ -0,0 +1 @@
 +a

@@ -1,0 +1,7 @@
+diff --git a/fail_on_update_if_doesnt_exist.txt b/fail_on_update_if_doesnt_exist.txt
+index 78981922..61780798 100644
+--- a/fail_on_update_if_doesnt_exist.txt
++++ b/fail_on_update_if_doesnt_exist.txt
+@@ -1 +1 @@
+-a
++b

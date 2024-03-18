@@ -1,0 +1,7 @@
+diff --git a/fail_on_rename_if_exists.txt b/fail_on_rename_if_exists.txt
+new file mode 100644
+index 00000000..78981922
+--- /dev/null
++++ b/fail_on_rename_if_exists.txt
+@@ -0,0 +1 @@
++a

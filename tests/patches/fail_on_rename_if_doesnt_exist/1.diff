@@ -1,0 +1,4 @@
+diff --git a/fail_on_rename_if_doesnt_exist.txt b/fail_on_rename_if_doesnt_exist_2.txt
+similarity index 100%
+rename from fail_on_rename_if_doesnt_exist.txt
+rename to fail_on_rename_if_doesnt_exist_2.txt

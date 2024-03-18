@@ -1,0 +1,5 @@
+diff --git a/fail_on_delete_if_doesnt_exist.txt b/fail_on_delete_if_doesnt_exist.txt
+deleted file mode 100644
+index 61780798..00000000
+--- a/fail_on_delete_if_doesnt_exist.txt
++++ /dev/null
