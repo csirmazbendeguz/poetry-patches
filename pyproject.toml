@@ -1,13 +1,25 @@
 [tool.poetry]
 name = "poetry-patches"
 version = "0.1.0"
-description = ""
-authors = ["Bendeguz Csirmaz <csirmazbendeguz@gmail.com>"]
+description = "A patches plugin for Poetry."
+license = "MIT"
+authors = ["Bendegúz Csirmaz <csirmazbendeguz@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/csirmazbendeguz/poetry-patches"
+keywords = ["poetry"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+poetry = "^1.8.2"
+requests = "^2.31.0"
+whatthepatch = "^1.0.5"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+black = "^24.3.0"
+
+[tool.poetry.plugins."poetry.application.plugin"]
+patches = "poetry_patches.plugin:PoetryPatchesPlugin"
 
 [build-system]
 requires = ["poetry-core"]
