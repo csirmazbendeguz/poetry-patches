@@ -10,6 +10,8 @@ from poetry.poetry import Poetry
 from poetry.utils.env import EnvManager
 from whatthepatch.exceptions import HunkApplyException
 
+from poetry_patches.state.backup import Backup
+
 
 class Diff:
     def __init__(
@@ -45,9 +47,10 @@ class Diff:
 
 
 class PoetryPatcher:
-    def __init__(self, poetry: Poetry, io: IO):
+    def __init__(self, poetry: Poetry, io: IO, backup: Backup):
         self.poetry = poetry
         self.io = io
+        self.backup = backup
 
     def debug(self, message: str) -> None:
         self.io.write_line(message, Verbosity.DEBUG)
@@ -86,6 +89,7 @@ class PoetryPatcher:
                         f"but '{old_path}' doesn't exist in {target_dir}."
                     )
 
+                self.backup.edit_or_delete(old_file)
                 old_file.unlink()
                 self.debug(f"{old_path} deleted")
                 continue
@@ -103,6 +107,7 @@ class PoetryPatcher:
                         f"but '{new_path}' already exists in '{target_dir}'."
                     )
 
+                self.backup.create_or_rename(new_file)
                 os.rename(old_file, new_file)
                 self.debug(f"{old_path} -> {new_path}")
                 new_path = old_path
@@ -115,6 +120,7 @@ class PoetryPatcher:
                         f"but '{new_path}' already exists in '{target_dir}'."
                     )
 
+                self.backup.create_or_rename(new_file)
                 data = "\n".join(whatthepatch.apply_diff(diff, ""))
                 new_file.write_text(data)
                 self.debug(f"'{new_path}' created")
@@ -135,6 +141,7 @@ class PoetryPatcher:
                         f"'{patch_uri}' failed to apply to '{old_path}' "
                         f"in '{target_dir}': {e}."
                     )
+                self.backup.edit_or_delete(new_file)
                 new_file.write_text(data)
                 self.debug(f"'{new_path}' updated")
 
