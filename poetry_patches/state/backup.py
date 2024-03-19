@@ -64,7 +64,7 @@ class Backup:
             if value is None:
                 file.unlink(missing_ok=True)
             else:
-                backup = Path(value).read_text()
-                file.write_text(backup)
+                backup = Path(value).read_bytes()
+                file.write_bytes(backup)
 
         self.meta.clear()
