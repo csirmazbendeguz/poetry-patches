@@ -76,3 +76,5 @@ class Backup:
                 file.write_bytes(backup)
 
         self.meta.clear()
+        for backup in self.backups.glob("*"):
+            backup.unlink()
