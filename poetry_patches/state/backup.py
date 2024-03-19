@@ -21,6 +21,11 @@ class Backup:
         if not BACKUPS.exists():
             BACKUPS.mkdir(parents=True, exist_ok=True)
 
+    def clear(self) -> None:
+        self.meta.clear()
+        for backup in self.backups.glob("*"):
+            backup.unlink()
+
     def edit_or_delete(self, file: Path) -> None:
         """
         Create a backup for an edited or deleted file.
@@ -75,6 +80,4 @@ class Backup:
                 backup = Path(value).read_bytes()
                 file.write_bytes(backup)
 
-        self.meta.clear()
-        for backup in self.backups.glob("*"):
-            backup.unlink()
+        self.clear()
