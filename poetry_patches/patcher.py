@@ -8,6 +8,7 @@ from cleo.io.outputs.output import Verbosity
 from poetry.exceptions import PoetryException
 from poetry.poetry import Poetry
 from poetry.utils.env import EnvManager
+from whatthepatch.exceptions import HunkApplyException
 
 
 class Diff:
@@ -126,8 +127,14 @@ class PoetryPatcher:
                         f"but '{old_path}' doesn't exist in '{target_dir}'."
                     )
 
-                text = old_file.read_text()
-                data = "\n".join(whatthepatch.apply_diff(diff, text))
+                text = old_file.read_bytes().decode()
+                try:
+                    data = "\n".join(whatthepatch.apply_diff(diff, text))
+                except HunkApplyException as e:
+                    raise PoetryException(
+                        f"'{patch_uri}' failed to apply to '{old_path}' "
+                        f"in '{target_dir}': {e}."
+                    )
                 new_file.write_text(data)
                 self.debug(f"'{new_path}' updated")
 

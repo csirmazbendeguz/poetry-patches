@@ -115,3 +115,16 @@ def test_pass_on_line_break(io: IO, tmp_path: Path) -> None:
     path = tmp_path / "pass_on_line_break.txt"
     assert path.exists()
     assert "aliqua" in path.read_text()
+
+
+def test_pass_on_line_adds(io: IO, tmp_path: Path) -> None:
+    patches_dir = PATCHES_DIR / "pass_on_line_adds"
+    diffs = get_diffs(patches_dir)
+
+    PoetryPatcher(None, io).apply_patches(tmp_path, diffs)
+
+    path = tmp_path / "pass_on_line_adds.txt"
+    assert path.exists()
+    text = path.read_text()
+    assert "maxime" in text
+    assert "delectus" in text

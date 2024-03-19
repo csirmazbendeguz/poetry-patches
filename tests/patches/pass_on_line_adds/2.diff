@@ -1,0 +1,21 @@
+diff --git a/pass_on_line_adds.txt b/pass_on_line_adds.txt
+index e8a73837..7a7551d8 100644
+--- a/pass_on_line_adds.txt
++++ b/pass_on_line_adds.txt
+@@ -4,6 +4,7 @@ dolor
+ sit
+ amet,
+ consectetur
++maxime
+ adipiscing
+ elit,
+ sed
+@@ -21,6 +22,7 @@ Ut
+ enim
+ ad
+ minim
++delectus
+ veniam,
+ quis
+ nostrud
+\ No newline at end of file
