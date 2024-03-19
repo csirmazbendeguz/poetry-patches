@@ -58,7 +58,7 @@ class Backup:
         """
         self.meta.load()
 
-        for key, value in self.meta.get_backups():
+        for key, value in self.meta.get_backups().items():
             file = Path(key)
 
             if value is None:
