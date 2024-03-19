@@ -9,7 +9,7 @@ class PatchesApplyCommand(GroupCommand):
     description = "Apply the patches."
 
     def handle(self) -> int:
-        PoetryPatcher(self.poetry, self.io).apply()
+        PoetryPatcher(self.poetry, self.io, Backup.get()).apply()
         return 0
 
 
