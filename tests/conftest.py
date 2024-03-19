@@ -18,14 +18,24 @@ def io() -> IO:
 
 
 @pytest.fixture
-def meta(tmp_path: Path) -> Meta:
-    return Meta(tmp_path / "meta.json")
+def meta_path(tmp_path: Path) -> Path:
+    return tmp_path / "meta.json"
 
 
 @pytest.fixture
-def backup(meta: Meta, tmp_path) -> Backup:
+def meta(meta_path: Path) -> Meta:
+    return Meta(meta_path)
+
+
+@pytest.fixture
+def backups(tmp_path: Path) -> Path:
     backups = tmp_path / "backups"
     backups.mkdir(parents=True, exist_ok=True)
+    return backups
+
+
+@pytest.fixture
+def backup(meta: Meta, backups: Path) -> Backup:
     return Backup(meta, backups)
 
 

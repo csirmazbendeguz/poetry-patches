@@ -32,13 +32,12 @@ class Backup:
         """
         src = str(file.resolve())
         self.meta.load()
+
         if self.meta.has_backup(src):
             return
 
         backup = self.backups / self.get_backup_name(file)
         if backup.exists():
-            # If the file got edited multiple times,
-            # a backup file may already exist.
             return
 
         # Copy the file to './poetry-patches/backups/'.
@@ -61,6 +60,7 @@ class Backup:
         """
         path = str(file.resolve())
         self.meta.load()
+
         if not self.meta.has_backup(path):
             self.meta.set_backup(path, None)
             self.meta.dump()
