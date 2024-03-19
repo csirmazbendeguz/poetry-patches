@@ -2,9 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-from cleo.application import Application
-from cleo.io.io import IO
-from cleo.io.outputs.output import Verbosity
 from poetry.exceptions import PoetryException
 
 from poetry_patches.patcher import PoetryPatcher
