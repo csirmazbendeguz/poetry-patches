@@ -18,6 +18,11 @@ class Backup:
         """
         Create a backup for an edited or deleted file.
         """
+        src = str(file.resolve())
+        self.meta.load()
+        if self.meta.has_backup(src):
+            return
+
         backup = self.backups / file.name
         if backup.exists():
             # If the file got edited multiple times,
@@ -25,11 +30,10 @@ class Backup:
             return
 
         # Copy the file to './poetry-patches/backups/'.
-        src, dst = str(file.resolve()), str(backup.resolve())
+        dst = str(backup.resolve())
         shutil.copy(src, dst)
 
         # Store the backup entry in './poetry-patches/meta.json'.
-        self.meta.load()
         self.meta.set_backup(src, dst)
         self.meta.dump()
 

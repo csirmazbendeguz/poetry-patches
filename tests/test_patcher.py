@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -23,6 +24,17 @@ def test_pass(poetry_patcher: PoetryPatcher, tmp_path: Path) -> None:
 
     assert not (tmp_path / "pass.txt").exists()
     assert not (tmp_path / "pass_2.txt").exists()
+    assert not (tmp_path / "backups" / "pass.txt").exists()
+    assert not (tmp_path / "backups" / "pass_2.txt").exists()
+    assert (tmp_path / "meta.json").read_text() == json.dumps(
+        {
+            "backups": {
+                str((tmp_path / "pass.txt").resolve()): None,
+                str((tmp_path / "pass_2.txt").resolve()): None,
+            }
+        },
+        indent=4,
+    )
 
 
 def test_fail_on_create_if_exists(
