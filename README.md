@@ -23,4 +23,5 @@ django = ["patches/django/mypatch.diff"]
 
 ## Commands
 
-- `poetry patches apply`: applies the patches defined in `pyproject.toml`
+- `poetry patches apply`
+- `poetry patches revert`

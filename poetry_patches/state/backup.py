@@ -14,6 +14,11 @@ class Backup:
     def get(cls):
         return cls(Meta.get(), BACKUPS)
 
+    @staticmethod
+    def init_dir() -> None:
+        if not BACKUPS.exists():
+            BACKUPS.mkdir(parents=True, exist_ok=True)
+
     def edit_or_delete(self, file: Path) -> None:
         """
         Create a backup for an edited or deleted file.
@@ -46,3 +51,20 @@ class Backup:
         if not self.meta.has_backup(path):
             self.meta.set_backup(path, None)
             self.meta.dump()
+
+    def revert(self) -> None:
+        """
+        Revert the patches.
+        """
+        self.meta.load()
+
+        for key, value in self.meta.get_backups():
+            file = Path(key)
+
+            if value is None:
+                file.unlink()
+            else:
+                backup = Path(value).read_text()
+                file.write_text(backup)
+
+        self.meta.clear()

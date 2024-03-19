@@ -20,6 +20,10 @@ class Meta:
     def get(cls):
         return cls(META)
 
+    def clear(self) -> None:
+        self.data = copy.deepcopy(self.DEFAULT)
+        self.dump()
+
     def load(self) -> None:
         if self.meta.exists():
             text = self.meta.read_text()
@@ -34,3 +38,6 @@ class Meta:
 
     def has_backup(self, key: str) -> bool:
         return key in self.data["backups"]
+
+    def get_backups(self) -> dict[str, str | None]:
+        return self.data["backups"]
