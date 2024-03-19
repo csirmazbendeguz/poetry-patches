@@ -1,9 +1,6 @@
 import json
 from pathlib import Path
 
-import pytest
-from poetry.exceptions import PoetryException
-
 from poetry_patches.patcher import PoetryPatcher
 
 PATCHES_DIR = Path("./patches")
@@ -40,9 +37,9 @@ def test_fail_on_create_if_exists(
     patches_dir = PATCHES_DIR / "fail_on_create_if_exists"
     diffs = get_diffs(patches_dir)
 
-    with pytest.raises(PoetryException):
-        poetry_patcher.apply_patches(tmp_path, diffs)
+    poetry_patcher.apply_patches(tmp_path, diffs)
 
+    assert 0 < poetry_patcher.errors
     assert (tmp_path / "fail_on_create_if_exists.txt").exists()
 
 
@@ -52,9 +49,9 @@ def test_fail_on_update_if_doesnt_exist(
     patches_dir = PATCHES_DIR / "fail_on_update_if_doesnt_exist"
     diffs = get_diffs(patches_dir)
 
-    with pytest.raises(PoetryException):
-        poetry_patcher.apply_patches(tmp_path, diffs)
+    poetry_patcher.apply_patches(tmp_path, diffs)
 
+    assert 0 < poetry_patcher.errors
     assert not (tmp_path / "fail_on_update_if_doesnt_exist.txt").exists()
 
 
@@ -64,9 +61,9 @@ def test_fail_on_delete_if_doesnt_exist(
     patches_dir = PATCHES_DIR / "fail_on_delete_if_doesnt_exist"
     diffs = get_diffs(patches_dir)
 
-    with pytest.raises(PoetryException):
-        poetry_patcher.apply_patches(tmp_path, diffs)
+    poetry_patcher.apply_patches(tmp_path, diffs)
 
+    assert 0 < poetry_patcher.errors
     assert not (tmp_path / "fail_on_delete_if_doesnt_exist.txt").exists()
 
 
@@ -76,9 +73,9 @@ def test_fail_on_rename_if_doesnt_exist(
     patches_dir = PATCHES_DIR / "fail_on_rename_if_doesnt_exist"
     diffs = get_diffs(patches_dir)
 
-    with pytest.raises(PoetryException):
-        poetry_patcher.apply_patches(tmp_path, diffs)
+    poetry_patcher.apply_patches(tmp_path, diffs)
 
+    assert 0 < poetry_patcher.errors
     assert not (tmp_path / "fail_on_rename_if_doesnt_exist.txt").exists()
 
 
@@ -88,9 +85,9 @@ def test_fail_on_rename_if_exists(
     patches_dir = PATCHES_DIR / "fail_on_rename_if_exists"
     diffs = get_diffs(patches_dir)
 
-    with pytest.raises(PoetryException):
-        poetry_patcher.apply_patches(tmp_path, diffs)
+    poetry_patcher.apply_patches(tmp_path, diffs)
 
+    assert 0 < poetry_patcher.errors
     assert (tmp_path / "fail_on_rename_if_exists.txt").exists()
     assert (tmp_path / "fail_on_rename_if_exists_2.txt").exists()
 

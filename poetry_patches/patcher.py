@@ -5,10 +5,9 @@ import requests
 import whatthepatch
 from cleo.io.io import IO
 from cleo.io.outputs.output import Verbosity
-from poetry.exceptions import PoetryException
 from poetry.poetry import Poetry
 from poetry.utils.env import EnvManager
-from whatthepatch.exceptions import HunkApplyException
+from whatthepatch.exceptions import WhatThePatchException
 
 from poetry_patches.state.backup import Backup
 
@@ -51,9 +50,14 @@ class PoetryPatcher:
         self.poetry = poetry
         self.io = io
         self.backup = backup
+        self.errors = 0
 
     def debug(self, message: str) -> None:
         self.io.write_line(message, Verbosity.DEBUG)
+
+    def error(self, message: str) -> None:
+        self.errors += 1
+        self.io.write_error_line(message)
 
     @property
     def poetry_patches_config(self) -> dict[str, list[str]]:
@@ -78,72 +82,70 @@ class PoetryPatcher:
         diffs = [Diff.from_diffobj(diff) for diff in whatthepatch.parse_patch(text)]
 
         for diff in diffs:
-            old_path, new_path = diff.old_path, diff.new_path
-            old_file, new_file = target_dir / old_path, target_dir / new_path
+            self.apply_diff(target_dir, diff)
 
-            # delete
-            if self.is_empty(new_path) and old_path != new_path:
-                if not old_file.exists():
-                    raise PoetryException(
-                        f"{patch_uri} deletes '{old_path}', "
-                        f"but '{old_path}' doesn't exist in {target_dir}."
-                    )
+    def apply_diff(self, target_dir: Path, diff: Diff) -> None:
+        old_path, new_path = diff.old_path, diff.new_path
+        old_file, new_file = target_dir / old_path, target_dir / new_path
 
-                self.backup.edit_or_delete(old_file)
-                old_file.unlink()
-                self.debug(f"{old_path} deleted")
-                continue
+        if self.is_empty(new_path) and old_path != new_path:
+            self.delete(old_file)
+        elif not self.is_empty(old_path) and old_path != new_path:
+            self.rename(old_file, new_file)
+            new_path = old_path
 
-            # rename
-            if not self.is_empty(old_path) and old_path != new_path:
-                if not old_file.exists():
-                    raise PoetryException(
-                        f"'{patch_uri}' renames '{old_path}' -> '{new_path}', "
-                        f"but '{old_path}' doesn't exist in '{target_dir}'."
-                    )
-                if new_file.exists():
-                    raise PoetryException(
-                        f"'{patch_uri}' renames '{old_path}' -> '{new_path}', "
-                        f"but '{new_path}' already exists in '{target_dir}'."
-                    )
+        if self.is_empty(old_path) and old_path != new_path:
+            self.create(new_file, diff)
+        if not self.is_empty(old_path) and old_path == new_path and diff.changes:
+            self.update(new_file, diff)
 
-                self.backup.create_or_rename(new_file)
-                os.rename(old_file, new_file)
-                self.debug(f"{old_path} -> {new_path}")
-                new_path = old_path
+    def delete(self, file: Path) -> None:
+        if not file.exists():
+            self.error(f"'{file}' can't delete, doesn't exist")
+            return
 
-            # create
-            if self.is_empty(old_path) and old_path != new_path:
-                if new_file.exists():
-                    raise PoetryException(
-                        f"'{patch_uri}' creates '{new_path}', "
-                        f"but '{new_path}' already exists in '{target_dir}'."
-                    )
+        self.backup.edit_or_delete(file)
+        file.unlink()
+        self.debug(f"{file} deleted")
 
-                self.backup.create_or_rename(new_file)
-                data = "\n".join(whatthepatch.apply_diff(diff, ""))
-                new_file.write_text(data)
-                self.debug(f"'{new_path}' created")
+    def rename(self, old: Path, new: Path) -> None:
+        if not old.exists():
+            self.error(f"'{old}' -> '{new}' can't rename, '{old}' doesn't exist")
+            return
+        if new.exists():
+            self.error(f"'{old}' -> '{new}' can't rename, '{new}' already exists")
+            return
 
-            # update
-            if not self.is_empty(old_path) and old_path == new_path and diff.changes:
-                if not old_file.exists():
-                    raise PoetryException(
-                        f"'{patch_uri}' updates '{old_path}', "
-                        f"but '{old_path}' doesn't exist in '{target_dir}'."
-                    )
+        self.backup.create_or_rename(new)
+        os.rename(old, new)
+        self.debug(f"{old} -> {new}")
 
-                text = old_file.read_bytes().decode()
-                try:
-                    data = "\n".join(whatthepatch.apply_diff(diff, text))
-                except HunkApplyException as e:
-                    raise PoetryException(
-                        f"'{patch_uri}' failed to apply to '{old_path}' "
-                        f"in '{target_dir}': {e}."
-                    )
-                self.backup.edit_or_delete(new_file)
-                new_file.write_text(data)
-                self.debug(f"'{new_path}' updated")
+    def create(self, file: Path, diff: Diff) -> None:
+        if file.exists():
+            self.error(f"'{file}' can't create, already exists")
+            return
+
+        self.backup.create_or_rename(file)
+        data = "\n".join(whatthepatch.apply_diff(diff, ""))
+        file.write_text(data)
+        self.debug(f"'{file}' created")
+
+    def update(self, file: Path, diff: Diff) -> None:
+        if not file.exists():
+            self.error(f"'{file}' can't update, doesn't exist")
+            return
+
+        text = file.read_bytes().decode()
+
+        try:
+            data = "\n".join(whatthepatch.apply_diff(diff, text))
+        except WhatThePatchException as e:
+            self.error(f"'{file}' can't update, failed to apply: {e}")
+            return
+
+        self.backup.edit_or_delete(file)
+        file.write_text(data)
+        self.debug(f"'{file}' updated")
 
     @staticmethod
     def read(uri: str) -> str:
