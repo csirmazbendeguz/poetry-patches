@@ -27,6 +27,11 @@ class Diff:
     def from_diffobj(cls, diffobj: whatthepatch.patch.diffobj):
         return cls(header=diffobj.header, changes=diffobj.changes, text=diffobj.text)
 
+    def to_diffobj(self) -> whatthepatch.patch.diffobj:
+        return whatthepatch.patch.diffobj(
+            header=self.header, changes=self.changes, text=self.text
+        )
+
     @property
     def old_path(self) -> str:
         old_path = self.header.old_path
@@ -126,8 +131,8 @@ class PoetryPatcher:
             return
 
         self.backup.create_or_rename(file)
-        data = "\n".join(whatthepatch.apply_diff(diff, ""))
-        file.write_text(data)
+        lines = whatthepatch.apply_diff(diff.to_diffobj(), "")
+        file.write_text("\n".join(lines))
         self.debug(f"'{file}' created")
 
     def update(self, file: Path, diff: Diff) -> None:
@@ -138,13 +143,13 @@ class PoetryPatcher:
         text = file.read_bytes().decode()
 
         try:
-            data = "\n".join(whatthepatch.apply_diff(diff, text))
+            lines = whatthepatch.apply_diff(diff.to_diffobj(), text)
         except WhatThePatchException as e:
             self.error(f"'{file}' can't update, failed to apply: {e}")
             return
 
         self.backup.edit_or_delete(file)
-        file.write_text(data)
+        file.write_text("\n".join(lines))
         self.debug(f"'{file}' updated")
 
     @staticmethod
