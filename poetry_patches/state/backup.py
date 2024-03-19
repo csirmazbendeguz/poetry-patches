@@ -1,4 +1,6 @@
+import os
 import shutil
+import uuid
 from pathlib import Path
 
 from poetry_patches import BACKUPS
@@ -28,7 +30,7 @@ class Backup:
         if self.meta.has_backup(src):
             return
 
-        backup = self.backups / file.name
+        backup = self.backups / self.get_backup_name(file)
         if backup.exists():
             # If the file got edited multiple times,
             # a backup file may already exist.
@@ -41,6 +43,12 @@ class Backup:
         # Store the backup entry in './poetry-patches/meta.json'.
         self.meta.set_backup(src, dst)
         self.meta.dump()
+
+    @staticmethod
+    def get_backup_name(file: Path) -> str:
+        root, ext = os.path.splitext(file.name)
+        suffix = str(uuid.uuid4())[:8]
+        return f"{root}_{suffix}{ext}"
 
     def create_or_rename(self, file: Path) -> None:
         """

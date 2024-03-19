@@ -15,7 +15,11 @@ def test_backup__edit_or_delete(tmp_path: Path):
 
     Backup(Meta(meta), backups).edit_or_delete(file)
 
-    backup = backups / "edit_or_delete.txt"
+    backups = list(backups.glob("*"))
+    assert len(backups) == 1
+    backup = backups[0]
+    assert backup.name.startswith("edit_or_delete_")
+    assert backup.name.endswith(".txt")
     assert backup.read_text() == "edit_or_delete"
     assert meta.read_text() == json.dumps(
         {"backups": {str(file.resolve()): str(backup.resolve())}}, indent=4
