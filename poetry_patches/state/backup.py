@@ -62,7 +62,7 @@ class Backup:
             file = Path(key)
 
             if value is None:
-                file.unlink()
+                file.unlink(missing_ok=True)
             else:
                 backup = Path(value).read_text()
                 file.write_text(backup)
