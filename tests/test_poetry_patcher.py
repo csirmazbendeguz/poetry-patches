@@ -124,6 +124,24 @@ class TestPoetryPatcher:
             {"backups": {str(file_1.resolve()): None, str(file_2.resolve()): None}},
         )
 
+    def test_fail_on_rename_if_exists_file_exists(self) -> None:
+        file_1 = self.tmp_path / "fail_on_rename_if_exists_file_exists.txt"
+        file_1.write_text("fail_on_rename_if_exists_file_exists")
+        file_2 = self.tmp_path / "fail_on_rename_if_exists_file_exists_2.txt"
+        file_2.write_text("fail_on_rename_if_exists_file_exists_2")
+
+        diffs = get_diffs(PATCHES / "fail_on_rename_if_exists_file_exists")
+
+        self.poetry_patcher.apply_patches(self.tmp_path, diffs)
+
+        assert 0 < self.poetry_patcher.errors
+        assert file_1.exists()
+        assert file_2.exists()
+
+        # backups
+        assert list(self.backups_path.glob("*")) == []
+        assert not self.meta_path.exists()
+
     def test_pass_on_line_remove(self) -> None:
         diffs = get_diffs(PATCHES / "pass_on_line_remove")
 
