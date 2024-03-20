@@ -162,3 +162,24 @@ class TestPoetryPatcher:
         # backups
         assert list(self.backups_path.glob("*")) == []
         assert_meta(self.meta_path, {"backups": {str(file.resolve()): None}})
+
+    def test_pass_on_rename_and_update(self) -> None:
+        diffs = get_diffs(PATCHES / "pass_on_rename_and_update")
+
+        self.poetry_patcher.apply_patches(self.tmp_path, diffs)
+
+        file_1 = self.tmp_path / "pass_on_rename_and_update.txt"
+        file_2 = self.tmp_path / "pass_on_rename_and_update_2.txt"
+        assert not file_1.exists()
+        assert file_2.exists()
+        text = file_2.read_text()
+        assert "labore" not in text
+        assert "minim" not in text
+        assert "veniam" not in text
+
+        # backups
+        assert list(self.backups_path.glob("*")) == []
+        assert_meta(
+            self.meta_path,
+            {"backups": {str(file_1.resolve()): None, str(file_2.resolve()): None}},
+        )

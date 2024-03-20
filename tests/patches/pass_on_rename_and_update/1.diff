@@ -1,0 +1,37 @@
+diff --git a/pass_on_rename_and_update.txt b/pass_on_rename_and_update.txt
+new file mode 100644
+index 00000000..b0819d76
+--- /dev/null
++++ b/pass_on_rename_and_update.txt
+@@ -0,0 +1,30 @@
++Lorem
++ipsum
++dolor
++sit
++amet,
++consectetur
++adipiscing
++elit,
++sed
++do
++eiusmod
++tempor
++incididunt
++ut
++labore
++ad
++minim
++veniam,
++quis
++nostrud
++exercitation
++ullamco
++laboris
++nisi
++ut
++aliquip
++ex
++ea
++commodo
++consequat.
+\ No newline at end of file
