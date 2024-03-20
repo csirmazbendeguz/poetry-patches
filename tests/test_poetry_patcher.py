@@ -168,6 +168,26 @@ class TestPoetryPatcher:
         assert list(self.backups_path.glob("*")) == []
         assert_meta(self.meta_path, {"backups": {str(file.resolve()): None}})
 
+    def test_pass_on_line_add_file_exists(self) -> None:
+        file = self.tmp_path / "pass_on_line_add_file_exists.txt"
+        file.write_text("Lorem\nipsum\ndolor")
+
+        diffs = get_diffs(PATCHES / "pass_on_line_add_file_exists")
+
+        self.poetry_patcher.apply_patches(self.tmp_path, diffs)
+
+        assert file.read_text() == "Lorem\nipsum\ndolor\nsit"
+
+        # backups
+        backups = list(self.backups_path.glob("*"))
+        assert len(backups) == 1
+        backup = backups[0]
+        assert backup.name.startswith("pass_on_line_add_file_exists_")
+        assert backup.name.endswith(".txt")
+        assert_meta(
+            self.meta_path, {"backups": {str(file.resolve()): str(backup.resolve())}}
+        )
+
     def test_pass_on_line_break(self) -> None:
         diffs = get_diffs(PATCHES / "pass_on_line_break")
 

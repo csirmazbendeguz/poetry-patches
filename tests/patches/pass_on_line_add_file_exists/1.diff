@@ -1,0 +1,12 @@
+diff --git a/pass_on_line_add_file_exists.txt b/pass_on_line_add_file_exists.txt
+index ac0dd762..b0396f55 100644
+--- a/pass_on_line_add_file_exists.txt
++++ b/pass_on_line_add_file_exists.txt
+@@ -1,3 +1,4 @@
+ Lorem
+ ipsum
+-dolor
+\ No newline at end of file
++dolor
++sit
+\ No newline at end of file
