@@ -71,6 +71,7 @@ class PoetryPatcher:
         return config
 
     def apply(self) -> None:
+        self.backup.revert()
         env = EnvManager(self.poetry, self.io).get()
 
         for key, value in self.poetry_patches_config.items():
