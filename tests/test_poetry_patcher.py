@@ -55,6 +55,21 @@ class TestPoetryPatcher:
         assert list(self.backups_path.glob("*")) == []
         assert_meta(self.meta_path, {"backups": {str(file.resolve()): None}})
 
+    def test_fail_on_create_if_exists_file_exists(self) -> None:
+        file = self.tmp_path / "fail_on_create_if_exists_file_exists.txt"
+        file.write_text("fail_on_create_if_exists_file_exists")
+
+        diffs = get_diffs(PATCHES / "fail_on_create_if_exists_file_exists")
+
+        self.poetry_patcher.apply_patches(self.tmp_path, diffs)
+
+        assert 0 < self.poetry_patcher.errors
+        assert file.read_text() == "fail_on_create_if_exists_file_exists"
+
+        # backups
+        assert list(self.backups_path.glob("*")) == []
+        assert not self.meta_path.exists()
+
     def test_fail_on_update_if_doesnt_exist(self) -> None:
         diffs = get_diffs(PATCHES / "fail_on_update_if_doesnt_exist")
 
