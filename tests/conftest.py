@@ -29,15 +29,15 @@ def meta(meta_path: Path) -> Meta:
 
 
 @pytest.fixture
-def backups(tmp_path: Path) -> Path:
+def backups_path(tmp_path: Path) -> Path:
     backups = tmp_path / "backups"
     backups.mkdir(parents=True, exist_ok=True)
     return backups
 
 
 @pytest.fixture
-def backup(meta: Meta, backups: Path) -> Backup:
-    return Backup(meta, backups)
+def backup(meta: Meta, backups_path: Path) -> Backup:
+    return Backup(meta, backups_path)
 
 
 @pytest.fixture
