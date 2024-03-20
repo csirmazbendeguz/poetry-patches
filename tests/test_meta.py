@@ -1,7 +1,7 @@
-import json
 from pathlib import Path
 
 from poetry_patches.state.meta import Meta
+from tests.conftest import assert_meta
 
 
 def test_set_backup(meta: Meta, meta_path: Path) -> None:
@@ -9,11 +9,9 @@ def test_set_backup(meta: Meta, meta_path: Path) -> None:
     meta.set_backup("/a/b/c", "/d/e/f")
     meta.dump()
 
-    assert meta_path.read_text() == json.dumps(
-        {"backups": {"/a/b/c": "/d/e/f"}}, indent=4
-    )
+    assert_meta(meta_path, {"backups": {"/a/b/c": "/d/e/f"}})
 
 
 def test_clear(meta: Meta, meta_path: Path) -> None:
     meta.clear()
-    assert meta_path.read_text() == json.dumps({"backups": {}}, indent=4)
+    assert_meta(meta_path, {"backups": {}})

@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -42,3 +43,7 @@ def backup(meta: Meta, backups: Path) -> Backup:
 @pytest.fixture
 def poetry_patcher(io: IO, backup: Backup) -> PoetryPatcher:
     return PoetryPatcher(None, io, backup)
+
+
+def assert_meta(path: Path, obj) -> None:
+    assert path.read_text() == json.dumps(obj, indent=4)

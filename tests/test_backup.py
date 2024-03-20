@@ -1,7 +1,7 @@
-import json
 from pathlib import Path
 
 from poetry_patches.state.backup import Backup
+from tests.conftest import assert_meta
 
 
 def test_edit_or_delete(
@@ -18,9 +18,7 @@ def test_edit_or_delete(
     assert backup.name.startswith("edit_or_delete_")
     assert backup.name.endswith(".txt")
     assert backup.read_text() == "edit_or_delete"
-    assert meta_path.read_text() == json.dumps(
-        {"backups": {str(file.resolve()): str(backup.resolve())}}, indent=4
-    )
+    assert_meta(meta_path, {"backups": {str(file.resolve()): str(backup.resolve())}})
 
 
 def test_create_or_rename(
@@ -32,9 +30,7 @@ def test_create_or_rename(
     backup.create_or_rename(file)
 
     assert list(backups.glob("*")) == []
-    assert meta_path.read_text() == json.dumps(
-        {"backups": {str(file.resolve()): None}}, indent=4
-    )
+    assert_meta(meta_path, {"backups": {str(file.resolve()): None}})
 
 
 def test_revert(backup: Backup, backups: Path, meta_path: Path, tmp_path: Path) -> None:
@@ -45,5 +41,5 @@ def test_revert(backup: Backup, backups: Path, meta_path: Path, tmp_path: Path) 
     backup.revert()
 
     assert not file.exists()
-    assert meta_path.read_text() == json.dumps({"backups": {}}, indent=4)
     assert list(backups.glob("*")) == []
+    assert_meta(meta_path, {"backups": {}})
